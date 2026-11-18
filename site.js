@@ -47,6 +47,7 @@
     if (!document.querySelector('elevenlabs-convai')) {
       var w = document.createElement('elevenlabs-convai');
       w.setAttribute('agent-id', AGENT_ID);
+      w.setAttribute('persistent-session', '');
       document.body.appendChild(w);
     }
     if (!document.querySelector('script[data-convai]')) {
