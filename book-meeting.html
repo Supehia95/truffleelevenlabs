@@ -264,6 +264,11 @@ img { max-width: 100%; display: block; }
 .form__note { font-size: 13px; line-height: 1; color: var(--oat-muted); }
 .status { display: none; background: var(--green-tint); border-radius: var(--radius-card); padding: 16px 18px; font-size: 14px; line-height: 1; color: var(--slate-ink); font-weight: 500; }
 .status.is-on { display: block; }
+.card-list { display: flex; flex-direction: column; gap: 16px; margin: 0; }
+.card-row { display: flex; flex-direction: column; gap: 6px; }
+.card-row[hidden] { display: none; }
+.card-row dt { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--oat-muted); }
+.card-row dd { margin: 0; font-size: 16px; line-height: 1.4; color: var(--slate-ink); overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
@@ -303,27 +308,16 @@ img { max-width: 100%; display: block; }
           <h2 class="h-title">Pick a time with our team.</h2>
           <p class="lede" style="font-size:16px">We filled in your details from our chat. Check them, change anything that is off, then choose a slot.</p>
         </div>
-        <form class="form" id="booking-details" data-prefill novalidate>
-          <div class="form__row">
-            <div class="field" data-field>
-              <label for="name">Name</label>
-              <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name">
-            </div>
-            <div class="field" data-field>
-              <label for="email-field">Work email</label>
-              <input id="email-field" name="email" type="email" autocomplete="email" placeholder="you@company.com">
-            </div>
-          </div>
-          <div class="field" data-field>
-            <label for="company">Company name</label>
-            <input id="company" name="company" type="text" autocomplete="organization" placeholder="Company">
-          </div>
-          <div class="field" data-field>
-            <label for="problem">What you want to discuss</label>
-            <textarea id="problem" name="problem" placeholder="What is getting in the way?"></textarea>
-          </div>
-          <div class="status" data-prefill-note role="status" aria-live="polite"></div>
-        </form>
+        <div class="form" id="booking-details" data-prefill-card>
+          <div class="eyebrow">Your details</div>
+          <dl class="card-list">
+            <div class="card-row" data-card-row="name"><dt>Name</dt><dd data-card-field="name"></dd></div>
+            <div class="card-row" data-card-row="email"><dt>Work email</dt><dd data-card-field="email"></dd></div>
+            <div class="card-row" data-card-row="company"><dt>Company</dt><dd data-card-field="company"></dd></div>
+            <div class="card-row" data-card-row="problem"><dt>What you want to discuss</dt><dd data-card-field="problem"></dd></div>
+          </dl>
+          <p class="form__note" data-card-empty>Choose a time on the calendar to book.</p>
+        </div>
       </div>
       <div class="form" id="zoom-calendar">
         <div class="eyebrow">Pick a time</div>

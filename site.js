@@ -140,10 +140,28 @@
     });
   }
 
+  /* Read-only card: shows the details the agent collected, nothing to edit or save. */
+  function applyCard() {
+    var data = getPrefill();
+    document.querySelectorAll('[data-prefill-card]').forEach(function (card) {
+      var any = false;
+      PREFILL_FIELDS.forEach(function (k) {
+        var dd = card.querySelector('[data-card-field="' + k + '"]');
+        var row = card.querySelector('[data-card-row="' + k + '"]');
+        if (!dd || !row) return;
+        dd.textContent = data[k] || '';
+        row.hidden = !data[k];
+        if (data[k]) any = true;
+      });
+      var empty = card.querySelector('[data-card-empty]');
+      if (empty) empty.hidden = any;
+    });
+  }
+
   function go(target, push) {
     load(target).then(function (doc) {
       swapIn(doc);
-      applyPrefill();
+      applyPrefill(); applyCard();
       if (push) history.pushState({ page: target }, '', target);
       window.scrollTo(0, 0);
     }).catch(function () {
@@ -170,7 +188,7 @@
   history.replaceState({ page: location.pathname.split('/').pop() || 'index.html' }, '');
   loadFooter();
   mountWidget();
-  applyPrefill();
+  applyPrefill(); applyCard();
 
   /* ---- Agent client tools ---- */
   var BASE_PAGES = { contact: 'contactus.html', booking: 'book-meeting.html', claudeforce: 'claudeforce.html' };
@@ -178,7 +196,7 @@
   function openPage(key, details) {
     if (details) setPrefill(details);
     var target = BASE_PAGES[key];
-    if (norm(location.pathname).split('/').pop() === target) { applyPrefill(); window.scrollTo(0, 0); return; }
+    if (norm(location.pathname).split('/').pop() === target) { applyPrefill(); applyCard(); window.scrollTo(0, 0); return; }
     go(target, true);
   }
 
