@@ -131,8 +131,18 @@
   loadFooter();
   mountWidget();
 
+widget.addEventListener("elevenlabs-convai:call", (event) => {
+    event.detail.config.clientTools = clientTools;
+  });
 
-  function open_contact_page(pageName){
-    alert('open_contact_page',pageName);
+    const clientTools = {
+    open_contact_page : (pageName) => {
+     alert('Opening contact page: ' + pageName);
   }
+}
+  
 })();
+
+ 
+
+    
