@@ -131,16 +131,20 @@
   loadFooter();
   mountWidget();
 
-widget.addEventListener("elevenlabs-convai:call", (event) => {
-    event.detail.config.clientTools = clientTools;
-  });
+  var clientTools = {
+    open_contact_page: function (params) {
+      var pageName = params && params.pageName !== undefined ? params.pageName : params;
+      alert('Opening contact page: ' + pageName);
+    }
+  };
 
-    const clientTools = {
-    open_contact_page : (pageName) => {
-     alert('Opening contact page: ' + pageName);
+  var widget = document.querySelector('elevenlabs-convai');
+  if (widget) {
+    widget.addEventListener('elevenlabs-convai:call', function (event) {
+      event.detail.config.clientTools = clientTools;
+    });
   }
-}
-  
+
 })();
 
  
