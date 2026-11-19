@@ -130,4 +130,9 @@
   history.replaceState({ page: location.pathname.split('/').pop() || 'index.html' }, '');
   loadFooter();
   mountWidget();
+
+
+  function open_contact_page(pageName){
+    alert('open_contact_page',pageName);
+  }
 })();
