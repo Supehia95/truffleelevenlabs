@@ -320,7 +320,7 @@ img { max-width: 100%; display: block; }
         </div>
       </div>
 
-      <form class="form" id="contact-form" novalidate>
+      <form class="form" id="contact-form" data-prefill novalidate>
         <div class="form__row">
           <div class="field" data-field>
             <label for="name">Name <span class="req">*</span></label>
@@ -367,6 +367,7 @@ img { max-width: 100%; display: block; }
           <span class="form__note">Fields marked * are required.</span>
         </div>
         <div class="status" id="status" role="status" aria-live="polite"></div>
+        <div class="status" data-prefill-note role="status" aria-live="polite"></div>
       </form>
     </div>
   </section>

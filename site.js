@@ -17,7 +17,8 @@
     'https://www.trufflecorp.com/contact': 'contactus.html',
     'index.html': 'index.html',
     'claudeforce.html': 'claudeforce.html',
-    'contactus.html': 'contactus.html'
+    'contactus.html': 'contactus.html',
+    'book-meeting.html': 'book-meeting.html'
   };
 
   function norm(href) { return href.replace(/[?#].*$/, ''); }
@@ -101,9 +102,48 @@
     });
   }
 
+  /* ---- Details collected by the agent, used to pre-fill forms ---- */
+  var PREFILL_KEY = 'truffle_prefill';
+  var PREFILL_FIELDS = ['name', 'email', 'company', 'topic', 'problem'];
+  function getPrefill() {
+    try { return JSON.parse(sessionStorage.getItem(PREFILL_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function setPrefill(p) {
+    var clean = {};
+    PREFILL_FIELDS.forEach(function (k) { if (p && p[k]) clean[k] = String(p[k]).trim(); });
+    try { sessionStorage.setItem(PREFILL_KEY, JSON.stringify(clean)); } catch (e) {}
+    return clean;
+  }
+  window.TrufflePrefill = { get: getPrefill, set: setPrefill };
+
+  function applyPrefill() {
+    var data = getPrefill();
+    var filled = 0;
+    document.querySelectorAll('form[data-prefill]').forEach(function (form) {
+      PREFILL_FIELDS.forEach(function (k) {
+        var el = form.elements[k];
+        if (!el || !data[k]) return;
+        if (el.tagName === 'SELECT') {
+          var want = data[k].toLowerCase();
+          Array.prototype.some.call(el.options, function (o) {
+            if (o.text.toLowerCase() === want) { el.value = o.value || o.text; filled++; return true; }
+          });
+        } else {
+          el.value = data[k]; filled++;
+        }
+      });
+      var note = form.querySelector('[data-prefill-note]');
+      if (note && filled) {
+        note.textContent = 'We filled this in from your chat. Check the details and change anything that is off.';
+        note.classList.add('is-on');
+      }
+    });
+  }
+
   function go(target, push) {
     load(target).then(function (doc) {
       swapIn(doc);
+      applyPrefill();
       if (push) history.pushState({ page: target }, '', target);
       window.scrollTo(0, 0);
     }).catch(function () {
@@ -130,11 +170,30 @@
   history.replaceState({ page: location.pathname.split('/').pop() || 'index.html' }, '');
   loadFooter();
   mountWidget();
+  applyPrefill();
+
+  /* ---- Agent client tools ---- */
+  var BASE_PAGES = { contact: 'contactus.html', booking: 'book-meeting.html', claudeforce: 'claudeforce.html' };
+
+  function openPage(key, details) {
+    if (details) setPrefill(details);
+    var target = BASE_PAGES[key];
+    if (norm(location.pathname).split('/').pop() === target) { applyPrefill(); window.scrollTo(0, 0); return; }
+    go(target, true);
+  }
 
   var clientTools = {
-    open_contact_page: function (params) {
-      var pageName = params && params.pageName !== undefined ? params.pageName : params;
-      alert('Opening contact page: ' + pageName);
+    open_claudeforce_page: function () {
+      openPage('claudeforce');
+      return 'Claudeforce page opened';
+    },
+    open_contact_page: function (p) {
+      openPage('contact', p);
+      return 'Contact page opened and pre-filled';
+    },
+    open_booking_page: function (p) {
+      openPage('booking', p);
+      return 'Booking page opened and pre-filled';
     }
   };
 
